@@ -41,7 +41,6 @@ body {
 }
 
 .btn {
-  background-color: transparent;
   cursor: pointer;
   border-radius: 4px;
   display: flex;
@@ -56,16 +55,23 @@ body {
 .btn-save {
   padding: 5px 30px;
   border: 1px solid #000;
+  background-color: transparent;
 }
 
 .btn-link {
   padding: 8px;
   border: 1.5px solid rgba(0, 0, 0, 0.11);
+  background-color: #fff;
 }
 
 .btn-link-text {
   font-size: 12px;
-  font-weight: 600 !important;
+  font-weight: 500;
+}
+
+.btn-link-icon {
+  font-size: 20px;
+  font-weight: 500;
 }
 
 .main {
