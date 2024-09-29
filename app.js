@@ -259,7 +259,7 @@ function generateTextarea(textAreaData) {
               <img src="./assets/delete.svg" alt="delete-btn" width="15px"  class='textarea-delete-btn'/>
             </div>
             <div class="input-wrapper">
-              <textarea  rows="5" class="input"></textarea>
+              <textarea  rows="5" class="input" placeholder="${textAreaData.placeholder}"></textarea>
             </div>
           </div>
         `;
