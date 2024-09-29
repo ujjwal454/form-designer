@@ -188,8 +188,18 @@ function generateSelect(selectElementData) {
   });
 
   addMoreBtn.addEventListener("click", () => {
+    let newOptionJson = defaults.select.options[0];
+
+    sampleJson = sampleJson.map((item) => {
+      if (item.id === selectElementData.id) {
+        item = { ...item, options: [...item.options, newOptionJson] };
+        return item;
+      }
+      return item;
+    });
+
     let newOption = generateSelectOptions(
-      [defaults.select.options[0]],
+      [newOptionJson],
       elementId
     ).firstChild;
     options.appendChild(newOption);
