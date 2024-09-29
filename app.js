@@ -63,10 +63,8 @@ const saveBtn = document.querySelector("#save-btn");
 /*                         Utils                       */
 
 function generateUniqueId() {
-  let timestamp = new Date().getTime();
-
-  const randomNum = Math.random().toString(36);
-  return `${timestamp}-${randomNum}`;
+  const randomNum = Math.random().toString().substring(4, 8);
+  return `${new Date().getTime()}-${randomNum}`;
 }
 
 function appendChildFormContainer(element) {
@@ -94,6 +92,7 @@ function generateInput(inputElemnentData) {
   const formElement = document.createElement("div");
   formElement.classList.add("form-element");
   formElement.id = inputElemnentData.id;
+  formElement.draggable = "true";
   formElement.innerHTML = `
       <div class="form-header">
         <p>${inputElemnentData.label}</p>
@@ -106,10 +105,9 @@ function generateInput(inputElemnentData) {
   const deleteButton = formElement.querySelector(".delete-btn");
 
   deleteButton.addEventListener("click", () => {
-    formElement.remove();
     sampleJson = sampleJson.filter((item) => item.id !== inputElemnentData.id);
+    formElement.remove();
   });
-
   return formElement;
 }
 
@@ -150,6 +148,7 @@ function generateSelect(selectElementData) {
   formElement.classList.add("form-element");
   const elementId = selectElementData.id;
   formElement.id = elementId;
+  formElement.draggable = "true";
 
   const options = generateSelectOptions(selectElementData.options, elementId);
 
@@ -213,6 +212,7 @@ function generateTextarea(textAreaData) {
   const formElement = document.createElement("div");
   formElement.classList.add("form-element");
   formElement.id = textAreaData.id;
+  formElement.draggable = "true";
 
   formElement.innerHTML = `<div class="form-element">
             <div class="form-header">
@@ -258,21 +258,21 @@ renderElements(sampleJson);
 /*      add events listners on add element button              */
 
 addInputBtn.addEventListener("click", () => {
-  const inputData = defaults.input;
+  const inputData = { ...defaults.input, id: generateUniqueId() };
   const element = generateInput(inputData);
   appendChildFormContainer(element);
   sampleJson.push(inputData);
 });
 
 addSelectBtn.addEventListener("click", () => {
-  const selectData = defaults.select;
+  let selectData = { ...defaults.select, id: generateUniqueId() };
   const element = generateSelect(selectData);
   appendChildFormContainer(element);
   sampleJson.push(selectData);
 });
 
 addTextareaBtn.addEventListener("click", () => {
-  const textareaData = defaults.textArea;
+  const textareaData = { ...defaults.textArea, id: generateUniqueId() };
   const element = generateTextarea(textareaData);
   appendChildFormContainer(element);
   sampleJson.push(textareaData);
