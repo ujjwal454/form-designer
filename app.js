@@ -62,6 +62,43 @@ const saveBtn = document.querySelector("#save-btn");
 
 /*                         Utils                       */
 
+function syncJson() {
+  const formElements = document.querySelectorAll(".form-element");
+  const newOrder = Array.from(formElements).map((el) => el.id);
+
+  sampleJson = newOrder.map((id) => sampleJson.find((item) => item.id === id));
+}
+
+function getDragAfterElement(y) {
+  const draggableNodeList = document.querySelectorAll(
+    ".form-element:not(.dragging)"
+  );
+  const draggable = Array.from(draggableNodeList);
+
+  let closestElement = null;
+  let clossestOffset = Number.NEGATIVE_INFINITY;
+
+  draggable.forEach((child) => {
+    const box = child.getBoundingClientRect();
+    const offset = y - box.top - box.height / 2;
+    if (offset < 0 && offset > clossestOffset) {
+      clossestOffset = offset;
+      closestElement = child;
+    }
+  });
+
+  return closestElement;
+}
+
+function handleDragAndDrop(element) {
+  element.addEventListener("dragstart", () => {
+    element.classList.add("dragging");
+  });
+  element.addEventListener("dragend", () => {
+    element.classList.remove("dragging");
+  });
+}
+
 function generateUniqueId() {
   const randomNum = Math.random().toString().substring(4, 8);
   return `${new Date().getTime()}-${randomNum}`;
@@ -108,6 +145,7 @@ function generateInput(inputElemnentData) {
     sampleJson = sampleJson.filter((item) => item.id !== inputElemnentData.id);
     formElement.remove();
   });
+  handleDragAndDrop(formElement);
   return formElement;
 }
 
@@ -205,6 +243,7 @@ function generateSelect(selectElementData) {
   });
 
   addToggleEventOnSelect(customSelect);
+  handleDragAndDrop(formElement);
   return formElement;
 }
 
@@ -214,22 +253,23 @@ function generateTextarea(textAreaData) {
   formElement.id = textAreaData.id;
   formElement.draggable = "true";
 
-  formElement.innerHTML = `<div class="form-element">
+  formElement.innerHTML = `
             <div class="form-header">
               <p>${textAreaData.label}</p>
               <img src="./assets/delete.svg" alt="delete-btn" width="15px"  class='textarea-delete-btn'/>
             </div>
             <div class="input-wrapper">
-              <textarea name="" id="" rows="5" class="input" ></textarea>
+              <textarea  rows="5" class="input"></textarea>
             </div>
           </div>
-        </div>`;
+        `;
 
   const deleteButton = formElement.querySelector(".textarea-delete-btn");
   deleteButton.addEventListener("click", () => {
     formElement.remove();
     sampleJson = sampleJson.filter((item) => item.id !== textAreaData.id);
   });
+  handleDragAndDrop(formElement);
   return formElement;
 }
 
@@ -281,4 +321,22 @@ addTextareaBtn.addEventListener("click", () => {
 saveBtn.addEventListener("click", () => {
   console.log("::::::JSON saved::::::::::");
   console.log(sampleJson);
+});
+
+formContainerDiv.addEventListener("dragover", (e) => {
+  e.preventDefault();
+  const closestElement = getDragAfterElement(e.clientY);
+  const draggingElement = document.querySelector(".dragging");
+
+  if (!formContainerDiv.contains(draggingElement)) {
+    return;
+  }
+
+  if (closestElement === null) {
+    formContainerDiv.appendChild(draggingElement);
+  } else {
+    formContainerDiv.insertBefore(draggingElement, closestElement);
+  }
+
+  syncJson();
 });
